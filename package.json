@@ -1,0 +1,17 @@
+{
+  "name": "im-gun",
+  "version": "1.0.0",
+  "description": "Gun as ad-hoc cluster",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.14.0",
+    "gun": "^0.3.996",
+    "lodash.omit": "^4.5.0"
+  }
+}

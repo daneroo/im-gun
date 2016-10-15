@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <title>gun examples</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Droid+Sans" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.16.4/lodash.min.js"></script>
+		<script src="../../gun.js"></script>
+  </head>
+  
+	<body>
+		<h1>Ad-hoc Cluster <button style="float: right;" onclick="localStorage.clear()">Clear Local Storage</button></h1>
+		<style>
+			iframe {
+				width: 100%;
+				height: 50%;
+				border: none;
+				border-top: ridge 2em skyblue;
+			}
+			html, body { 
+				font-family: "Droid Sans";
+				font-size: 24px;
+				font-style: normal;
+				font-variant: normal;
+				font-weight: 500;
+			}
+			.hide { display: none; }
+			form .who { width: 10%; }
+			form .what { width: 80%; }
+			ul { list-style: none; padding: 0; }
+			ul .when {color: #555; font-size: 80%}
+			/*
+			ul .when {color: #555; font-size: 12pt; float: right; display: none; }
+			li:hover .when {display: inline;}
+			*/
+		</style>
+		<!--
+		<a href="/todo/index.html"><iframe src="/todo/index.html"></iframe></a>
+		<a href="/json/index.html"><iframe src="/json/index.html"></iframe></a>
+		<a href="/chat/index.html"><iframe src="/chat/index.html"></iframe></a>
+		<script src="../gun.js"></script>
+		-->
+		<ul><li class="hide">
+			<b class="who"></b>:
+			<span class="what"></span>
+			<u class="hide sort">0</u>
+			<span class="when">0</span>
+		</li></ul>
+		<script>
+			var $ = function(s, e){ return (e || document).querySelector(s) } // make native look like jQuery.
+			;(function(){var H=HTMLElement,C=H.prototype; // jQuery chaining replacement!
+				for(var i in C){(function(j,i){if(j&&j!=i){
+					try{C[j]=C[j]||C[i]}catch(e){C[j]=function(){return this[i]}}
+				}}(i.replace(/[A-Z](.*)/g,''),i));
+			}}());
+			$.sort = function(g, e){ return (g > ($('.sort', e)[$.text] || -Infinity))? e : $.sort(g, e.previousSibling) }
+			$.text = document.body.textContent? 'textContent' : 'innerText'; // because browsers are stupid.
+		</script>
+		<script>
+			($.model = $('ul li').clone(true)).removeAttribute('class');
+			//var gun = Gun(location.origin + '/gun');
+			var peers = [location.origin].map(function(p){return p+'/gun'})
+			//var peers = ['8080','8081','8082'].map(function(p){return 'http://localhost:'+p+'/gun'})
+			console.log('peers',peers)
+			var gun = Gun(peers);
+
+			var shared = gun.get('shared');
+			//const accum={};
+			shared.map(function (o, name) {
+				name = name.replace(':','-')
+				console.log(`-shared[${name}] >> ${show(o)}`)
+				//accum[name]=clean(o)
+				//console.log(JSON.stringify(accum,null,2))
+
+				var $ul = $('ul'), $last = $.sort(name, $ul.last()), $msg;
+				($msg = $("#msg-" + name) || $ul.insertBefore($.model.clone(true), $last.next())).id = 'msg-' + name;
+				$('.who', $msg)[$.text] = name;
+				$('.what', $msg)[$.text] = o.tick;
+				var now = new Date(o.now)
+				var lat = +new Date()-now
+				$('.when', $msg)[$.text] = now.toISOString()+' latency: '+lat+'ms';
+				$('.sort', $msg)[$.text] = name;
+				if(document.body.scrollHeight - (window.scrollY + window.innerHeight) <= $last.scrollHeight + 50){
+					window.scrollTo(0, document.body.scrollHeight);
+				}
+
+			}, { change: true })
+			function show(o) {
+				return JSON.stringify(clean(o))
+			}
+			function clean(o) {
+				return _.omit(o, '_')
+			}
+		</script>
+	</body>
+</html>
