@@ -24,3 +24,5 @@
 ### ionic/ng v2
 - [ng2-nvd3](https://github.com/krispo/ng2-nvd3)
 - [ng-nvd3](https://krispo.github.io/angular-nvd3/#/forceDirectedGraph)
+- [Angular 2 apps using Observable Data Services](http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/)
+- [WebSockets with Angular2 and RxJS](https://medium.com/@lwojciechowski/websockets-with-angular2-and-rxjs-8b6c5be02fac#.clhmgtnxd)

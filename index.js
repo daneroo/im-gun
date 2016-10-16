@@ -5,6 +5,8 @@ const peers = [8080, 8081, 8082].filter(peer => !(peer == port)).map(peer => `ws
 // const peers = (port == 8080) ? [] : [`ws://127.0.0.1:8080/gun`]
 
 const file = `data/data-${port}.json`
+// const staticRoot = 'adminApp/www'
+const staticRoot = 'public'
 
 const express = require('express');
 const omit = require('lodash.omit');
@@ -18,14 +20,15 @@ var gun = Gun({
 });
 
 gun.wsp(app);
-app.use(express.static('public')).listen(port);
+// app.use(express.static('public')).listen(port);
+app.use(express.static(staticRoot)).listen(port);
 
 console.log('Server started on port ' + port + ' with /gun');
 console.log('  and file: ' + file);
 console.log('  and peers: ' + peers);
 
 
-var shared = gun.get('shared');
+var heartbeats = gun.get('heartbeats');
 
 let tick = Math.floor(100 * Math.random());
 setInterval(function () {
@@ -36,18 +39,16 @@ setInterval(function () {
     now: new Date().toISOString()
   }
   console.log()
-  console.log(`-shared[${name}] << ${show(o)}`)
-  shared.path(name).put(o)
+  console.log(`-heartbeats[${name}] << ${show(o)}`)
+  heartbeats.path(name).put(o)
 }, 3000)
 
 const accum = {};
-shared.map(function (o, name) {
-  console.log(`-shared[${name}] >> ${show(o)}`)
+heartbeats.map(function (o, name) {
+  console.log(`-heartbeats[${name}] >> ${show(o)}`)
   accum[name] = clean(o)
   console.log(JSON.stringify(accum, null, 2))
 }, { change: true })
-
-shared.val()
 
 function show(o) {
   return JSON.stringify(clean(o))

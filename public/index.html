@@ -59,16 +59,16 @@
 		<script>
 			($.model = $('ul li').clone(true)).removeAttribute('class');
 			//var gun = Gun(location.origin + '/gun');
-			var peers = [location.origin].map(function(p){return p+'/gun'})
-			//var peers = ['8080','8081','8082'].map(function(p){return 'http://localhost:'+p+'/gun'})
+			//var peers = [location.origin].map(function(p){return p+'/gun'})
+			var peers = ['8080','8081','8082'].map(function(p){return 'http://localhost:'+p+'/gun'})
 			console.log('peers',peers)
 			var gun = Gun(peers);
 
-			var shared = gun.get('shared');
+			var heartbeats = gun.get('heartbeats');
 			//const accum={};
-			shared.map(function (o, name) {
+			heartbeats.map(function (o, name) {
 				name = name.replace(':','-')
-				console.log(`-shared[${name}] >> ${show(o)}`)
+				console.log(`-heartbeats[${name}] >> ${show(o)}`)
 				//accum[name]=clean(o)
 				//console.log(JSON.stringify(accum,null,2))
 
