@@ -13,6 +13,7 @@
 - [Aphyr, or Kyle Kingsbury / Jepsen](https://aphyr.com/) 
   - https://aphyr.com/tags/jepsen
 
+### PANIC
 - https://github.com/PsychoLlama/panic-demo  
 - https://github.com/gundb/panic-server
 - https://gitlab.com/PsychoLlama/verify-server-sync
@@ -20,5 +21,6 @@
 - https://gitlab.com/PsychoLlama/gundb-rebuild
 - https://github.com/PsychoLlama/graph-crdt
 
+### ionic/ng v2
 - [ng2-nvd3](https://github.com/krispo/ng2-nvd3)
 - [ng-nvd3](https://krispo.github.io/angular-nvd3/#/forceDirectedGraph)
