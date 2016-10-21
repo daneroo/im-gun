@@ -1,5 +1,9 @@
 # im-gun
-
+## Build adminApp
+```
+cd adminApp
+npm run build
+```
 ## REFERENCES
 
 - [Web Site](http://gun.js.org/#step1)

@@ -1,87 +1,77 @@
 import Rx from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
+import { WindowRef } from './window.reference';
 
+// declare class Gun{};
 @Injectable()
 export class GunService {
-  private _heartbeats: Rx.Subject<any>;
-  // private _heartbeats: BehaviorSubject<List<Todo>> = new BehaviorSubject(List([]));
-  private _rands: Rx.BehaviorSubject<Number>
+  private heartRate = 10000 // ms
+  private Gun: any;
+  private _heartbeatsSubject: Rx.BehaviorSubject<any>;
 
-  constructor() {
-    // setInterval(() => {
-    //   console.log('--random')
-    // }, 1000)
+  constructor(private winRef: WindowRef) {
+    // console.log('window.Gun', winRef.nativeWindow.Gun)
+    this.Gun = winRef.nativeWindow.Gun
   }
 
-  public connect(url): Rx.Subject<any> {
-    if (!this._heartbeats) {
-      // this._heartbeats = this.create(url);
+  private heartbeats = {
+    "localhost:8080": {
+      "tick": 35,
+      "now": "2016-10-15T19:25:58.951Z"
+    },
+    "localhost:8081": {
+      "tick": 29,
+      "now": "2016-10-15T19:25:57.976Z"
+    },
+    "localhost:8082": {
+      "tick": 95,
+      "now": "2016-10-16T04:09:33.877Z"
     }
-    return this._heartbeats;
   }
-  public getRands(): Rx.BehaviorSubject<Number> {
-    if (!this._rands) {
-      this._rands = new Rx.BehaviorSubject(42)
-      setInterval(() => {
-        this._rands.next(Math.floor(Math.random() * 100))
-      }, 1000)
+  getHeartbeats(): Rx.BehaviorSubject<any> {
+    if (!this._heartbeatsSubject) {
+      this._heartbeatsSubject = new Rx.BehaviorSubject(this.heartbeats)
+      // this.startSynthetic()
+      this.startGun()
     }
-    return this._rands
+    return this._heartbeatsSubject
   }
+  startGun(): void {
+    // Move this to singleton init
+    // const peers = ['8080'].map(function (p) { return 'http://localhost:' + p + '/gun' })
+    const peers = ['8080', '8081', '8082'].map(function (p) { return 'http://localhost:' + p + '/gun' })
+    console.log('peers', peers)
+    const gun = this.Gun(peers);
 
-  // var subscription = subject.subscribe(
-  // function (x) {
-  //   console.log('Next: ' + x.toString());
-  // },
-  // function (err) {
-  //   console.log('Error: ' + err);
-  // },
-  // function () {
-  //   console.log('Completed');
-  // });
+    const heartbeatsGun = gun.get('heartbeats');
+    //const accum={};
+    const outerhb = this.heartbeats;
+    const hbs = this._heartbeatsSubject
+    
+    heartbeatsGun.map(function (o, name) {
+      // name = name.replace(':', '-')
+      // console.log(`-heartbeats[${name}] >> ${JSON.stringify(o)}`)
 
-  // => Next: 42
+      const hb = outerhb[name]
+      hb.tick = o.tick
+      hb.now = o.now
+      console.log(`-heartbeats[${name}] >> ${JSON.stringify(hb)}`)
+      
+      hbs.next(outerhb)
+      
+    }, { change: true })
+  }
+  startSynthetic(): void {
+    const outerhb = this.heartbeats;
+    const hbs = this._heartbeatsSubject
 
-  // subject.onNext(56);
-  // // => Next: 56
-
-  // subject.onCompleted();
-  // // => Completed
-
-  // private create(): Rx.Subject<MessageEvent> {
-  //   let ws = new WebSocket(url);
-  //   let observable = Rx.Observable.create(
-  //     (obs: Rx.Observer<any>) => {
-  //       ws.onmessage = obs.next.bind(obs);
-  //       ws.onerror = obs.error.bind(obs);
-  //       ws.onclose = obs.complete.bind(obs);
-  //       return ws.close.bind(ws);
-  //     }
-  //   );
-  //   let observer = {
-  //     next: (data: Object) => {
-  //       if (ws.readyState === WebSocket.OPEN) {
-  //         ws.send(JSON.stringify(data));
-  //       }
-  //     },
-  //   };
-  //   return Rx.Subject.create(observer, observable);
-  // }
-
-  getHeartbeats(): Promise<any> {
-    return Promise.resolve({
-      "localhost:8080": {
-        "tick": "35",
-        "now": "2016-10-15T19:25:58.951Z"
-      },
-      "localhost:8081": {
-        "tick": "29",
-        "now": "2016-10-15T19:25:57.976Z"
-      },
-      "localhost:8082": {
-        "tick": "95",
-        "now": "2016-10-16T04:09:33.877Z"
-      }
-    })
+    setInterval(() => {
+      const keys = Object.keys(this.heartbeats);
+      const which = keys[Math.floor(Math.random() * keys.length)]
+      const m = this.heartbeats[which]
+      m.tick = (m.tick + 1) % 10000;
+      m.now = new Date().toISOString()
+      hbs.next(outerhb)
+    }, this.heartRate)
   }
 }

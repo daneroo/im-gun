@@ -20,7 +20,6 @@ var gun = Gun({
 });
 
 gun.wsp(app);
-// app.use(express.static('public')).listen(port);
 app.use(express.static(staticRoot)).listen(port);
 
 console.log('Server started on port ' + port + ' with /gun');
