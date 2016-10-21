@@ -1,8 +1,7 @@
 import Rx from 'rxjs/Rx';
 import { Injectable } from '@angular/core';
-import { WindowRef } from './window.reference';
+import Gun from 'gun/gun.js'
 
-// declare class Gun{};
 @Injectable()
 export class GunService {
 
@@ -11,12 +10,10 @@ export class GunService {
   private peers = ['8082','8081', '8080']
     .map(p => `http://localhost:${p}/gun`)
 
-  private Gun: any;
   private _heartbeatsSubject: Rx.BehaviorSubject<any>;
 
-  constructor(private winRef: WindowRef) {
-    // console.log('window.Gun', winRef.nativeWindow.Gun)
-    this.Gun = winRef.nativeWindow.Gun
+  constructor() {
+    console.log('imported Gun', Gun)
   }
 
   private heartbeats = {
@@ -44,9 +41,10 @@ export class GunService {
     }
     return this._heartbeatsSubject
   }
-  startGun(): void {
+
+  private startGun(): void {
     console.log('peers', this.peers)
-    const gun = this.Gun(this.peers);
+    const gun = Gun(this.peers);
 
     const heartbeatsGun = gun.get('heartbeats');
     const self = this
@@ -64,7 +62,7 @@ export class GunService {
     }, { change: true })
   }
 
-  latency(hb): void {
+  private latency(hb): void {
     const now = new Date().getTime()
     const stamp = new Date(hb.stamp).getTime()
     if (hb.lastSeen !== hb.stamp) {
@@ -76,7 +74,7 @@ export class GunService {
 
 
   private heartRate = 10000 // ms
-  startSynthetic(): void {
+  private startSynthetic(): void {
     const self = this
     setInterval(() => {
       const keys = Object.keys(this.heartbeats);

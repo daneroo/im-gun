@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { IonicApp, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
-import { WindowRef } from '../services/window.reference';
-import { RandService } from '../services/rand.service';
 import { GunService } from '../services/gun.service';
 import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
@@ -29,8 +27,6 @@ import { TabsPage } from '../pages/tabs/tabs';
     TabsPage
   ],
   providers: [
-    WindowRef,
-    RandService,
     GunService
   ]
 })

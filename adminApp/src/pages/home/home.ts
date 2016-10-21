@@ -4,7 +4,6 @@ import { NavController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 
 import { GunService } from '../../services/gun.service';
-import { RandService } from '../../services/rand.service';
 import { OnInit } from '@angular/core';
 
 @Component({
@@ -13,27 +12,16 @@ import { OnInit } from '@angular/core';
 })
 export class HomePage implements OnInit {
   heartbeats: any
-  rand: any
   constructor(public navCtrl: NavController,
     private toastCtrl: ToastController,
-    private randService: RandService,
     private gunService: GunService) {
   }
   ngOnInit(): void {
     // Setup for service observables, best not in constructor
-    this.getHeartbeats();
-    this.getRands();
+    this.initHeartbeats();
   }
 
-  getRands(): void {
-    this.randService
-      .getRands()
-      .subscribe(rand => {
-        console.log(`<< observer received rand:${rand}`)
-        this.rand = rand
-      })
-  }
-  getHeartbeats(): void {
+  initHeartbeats(): void {
     this.gunService
       .getHeartbeats()
       .subscribe((heartbeats) => {
