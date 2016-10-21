@@ -32,10 +32,10 @@ var heartbeats = gun.get('heartbeats');
 let tick = Math.floor(100 * Math.random());
 setInterval(function () {
   const name = `localhost:${port}`
-  tick = (tick + 1) % 100
+  tick = (tick + 1) % 10000
   const o = {
     tick: `${tick}`,
-    now: new Date().toISOString()
+    stamp: new Date().toISOString()
   }
   console.log()
   console.log(`-heartbeats[${name}] << ${show(o)}`)

@@ -16,8 +16,8 @@ export class HomePage implements OnInit {
   rand: any
   constructor(public navCtrl: NavController,
     private toastCtrl: ToastController,
-    private gunService: GunService,
-    private randService: RandService) {
+    private randService: RandService,
+    private gunService: GunService) {
   }
   ngOnInit(): void {
     // Setup for service observables, best not in constructor

@@ -5,7 +5,12 @@ import { WindowRef } from './window.reference';
 // declare class Gun{};
 @Injectable()
 export class GunService {
-  private heartRate = 10000 // ms
+
+  // private peers = ['8080']
+  // private peers = ['8080', '8081', '8082']
+  private peers = ['8082','8081', '8080']
+    .map(p => `http://localhost:${p}/gun`)
+
   private Gun: any;
   private _heartbeatsSubject: Rx.BehaviorSubject<any>;
 
@@ -16,18 +21,21 @@ export class GunService {
 
   private heartbeats = {
     "localhost:8080": {
-      "tick": 35,
-      "now": "2016-10-15T19:25:58.951Z"
+      tick: 35,
+      stamp: "2016-10-15T19:25:58.951Z",
+      lastSeen: "2016-10-15T19:25:58.951Z",
+      latencies: [26, 35],
     },
     "localhost:8081": {
-      "tick": 29,
-      "now": "2016-10-15T19:25:57.976Z"
+      tick: 29,
+      stamp: "2016-10-15T19:25:57.976Z"
     },
     "localhost:8082": {
-      "tick": 95,
-      "now": "2016-10-16T04:09:33.877Z"
+      tick: 95,
+      stamp: "2016-10-16T04:09:33.877Z"
     }
   }
+
   getHeartbeats(): Rx.BehaviorSubject<any> {
     if (!this._heartbeatsSubject) {
       this._heartbeatsSubject = new Rx.BehaviorSubject(this.heartbeats)
@@ -37,41 +45,46 @@ export class GunService {
     return this._heartbeatsSubject
   }
   startGun(): void {
-    // Move this to singleton init
-    // const peers = ['8080'].map(function (p) { return 'http://localhost:' + p + '/gun' })
-    const peers = ['8080', '8081', '8082'].map(function (p) { return 'http://localhost:' + p + '/gun' })
-    console.log('peers', peers)
-    const gun = this.Gun(peers);
+    console.log('peers', this.peers)
+    const gun = this.Gun(this.peers);
 
     const heartbeatsGun = gun.get('heartbeats');
-    //const accum={};
-    const outerhb = this.heartbeats;
-    const hbs = this._heartbeatsSubject
-    
-    heartbeatsGun.map(function (o, name) {
-      // name = name.replace(':', '-')
-      // console.log(`-heartbeats[${name}] >> ${JSON.stringify(o)}`)
+    const self = this
+    heartbeatsGun.map(function (o, peer) {
+      // console.log(`-heartbeats[${peer}] >> ${JSON.stringify(o)}`)
 
-      const hb = outerhb[name]
+      const hb = self.heartbeats[peer]
       hb.tick = o.tick
-      hb.now = o.now
-      console.log(`-heartbeats[${name}] >> ${JSON.stringify(hb)}`)
-      
-      hbs.next(outerhb)
-      
+      hb.stamp = o.stamp
+      self.latency(hb)
+      console.log(`-heartbeats[${peer}] >> ${JSON.stringify(hb)}`)
+
+      self._heartbeatsSubject.next(self.heartbeats)
+
     }, { change: true })
   }
-  startSynthetic(): void {
-    const outerhb = this.heartbeats;
-    const hbs = this._heartbeatsSubject
 
+  latency(hb): void {
+    const now = new Date().getTime()
+    const stamp = new Date(hb.stamp).getTime()
+    if (hb.lastSeen !== hb.stamp) {
+      hb.latencies = []
+      hb.lastSeen = hb.stamp
+    }
+    hb.latencies.push(now - stamp)
+  }
+
+
+  private heartRate = 10000 // ms
+  startSynthetic(): void {
+    const self = this
     setInterval(() => {
       const keys = Object.keys(this.heartbeats);
       const which = keys[Math.floor(Math.random() * keys.length)]
-      const m = this.heartbeats[which]
+      const m = self.heartbeats[which]
       m.tick = (m.tick + 1) % 10000;
-      m.now = new Date().toISOString()
-      hbs.next(outerhb)
+      m.stamp = new Date().toISOString()
+      self._heartbeatsSubject.next(self.heartbeats)
     }, this.heartRate)
   }
 }
