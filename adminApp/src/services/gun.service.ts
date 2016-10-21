@@ -73,16 +73,16 @@ export class GunService {
   }
 
 
-  private heartRate = 10000 // ms
-  private startSynthetic(): void {
-    const self = this
-    setInterval(() => {
-      const keys = Object.keys(this.heartbeats);
-      const which = keys[Math.floor(Math.random() * keys.length)]
-      const m = self.heartbeats[which]
-      m.tick = (m.tick + 1) % 10000;
-      m.stamp = new Date().toISOString()
-      self._heartbeatsSubject.next(self.heartbeats)
-    }, this.heartRate)
-  }
+  // private heartRate = 10000 // ms
+  // private startSynthetic(): void {
+  //   const self = this
+  //   setInterval(() => {
+  //     const keys = Object.keys(this.heartbeats);
+  //     const which = keys[Math.floor(Math.random() * keys.length)]
+  //     const m = self.heartbeats[which]
+  //     m.tick = (m.tick + 1) % 10000;
+  //     m.stamp = new Date().toISOString()
+  //     self._heartbeatsSubject.next(self.heartbeats)
+  //   }, this.heartRate)
+  // }
 }
