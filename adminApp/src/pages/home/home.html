@@ -21,8 +21,8 @@
 			<ion-avatar item-left>
 				<ion-icon name="disc" color="primary"></ion-icon>
 			</ion-avatar>
-			<h1>{{h.peer}}</h1>
-			<h3>{{h.heartbeat.stamp}} ({{h.heartbeat.tick}})</h3>
+			<h2>{{h.peer}}</h2>
+			<h2>{{h.heartbeat.stamp}} ({{h.heartbeat.tick}})</h2>
       <p> <i>latency:</i>{{h.heartbeat.latencies[0]}}ms ({{h.heartbeat.latencies.length}} duplicate updates)</p>
 			<!--<pre>{{h.heartbeat | json}}</pre>-->
 		</ion-item>
