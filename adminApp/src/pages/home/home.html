@@ -1,18 +1,36 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>Admin Home</ion-title>
-  </ion-navbar>
+	<ion-navbar>
+		<ion-title>Admin Home</ion-title>
+	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
-  <ion-fab top right edge>
-    <button ion-fab mini (click)="clearLocalStorage()"><ion-icon name="nuclear"></ion-icon></button>
-  </ion-fab>
-  <h2>Gun Ad-hoc Cluster!</h2>
-  <p>
-    This is a representation of a Gun distributed graph database.
-  </p>
-  <pre>
-{{heartbeats | json}}
-  </pre>
+	<ion-fab top right edge>
+		<button ion-fab mini (click)="clearLocalStorage()"><ion-icon name="nuclear"></ion-icon></button>
+	</ion-fab>
+	<h2>Gun Ad-hoc Cluster!</h2>
+	<p>
+		This is a representation of a Gun distributed graph database's communication heartbeat.
+	</p>
+
+	<h4>Heartbeat</h4>
+
+	<!--<div *ngFor="let h of heartbeatArray()">{{h.peer}}: {{h.heartbeat | json}}</div>-->
+	<ion-list>
+		<ion-item *ngFor="let h of heartbeatArray()">
+			<ion-avatar item-left>
+				<ion-icon name="disc" color="primary"></ion-icon>
+			</ion-avatar>
+			<h1>{{h.peer}}</h1>
+			<h3>{{h.heartbeat.stamp}} ({{h.heartbeat.tick}})</h3>
+      <p> <i>latency:</i>{{h.heartbeat.latencies[0]}}ms ({{h.heartbeat.latencies.length}} duplicate updates)</p>
+			<!--<pre>{{h.heartbeat | json}}</pre>-->
+		</ion-item>
+	</ion-list>
+
+	<!--
+	<pre>
+		{{heartbeats | json}}
+	</pre>
+  -->
 </ion-content>

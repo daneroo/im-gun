@@ -21,12 +21,20 @@ export class HomePage implements OnInit, OnDestroy {
     // Setup for service observables, best not in constructor
     this.initHeartbeats();
   }
-  ngOnDestroy() { 
+  ngOnDestroy() {
     console.log('OnDestroy')
     this.subscription.unsubscribe();
-    this.heartbeats={};
+    // clear the data!
+    this.heartbeats = {};
   }
 
+  // convienience to iterate for template
+  heartbeatArray(): any[] {
+    return Object.keys(this.heartbeats)
+      .map(peer => {
+        return { peer: peer, heartbeat: this.heartbeats[peer] }
+      })
+  }
   initHeartbeats(): void {
     this.subscription = this.gunService
       .getHeartbeats()

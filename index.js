@@ -26,8 +26,8 @@ console.log('Server started on port ' + port + ' with /gun');
 console.log('  and file: ' + file);
 console.log('  and peers: ' + peers);
 
-
-var heartbeats = gun.get('heartbeats');
+const heartRate = 3000 //ms
+const heartbeats = gun.get('heartbeats');
 
 let tick = Math.floor(100 * Math.random());
 setInterval(function () {
@@ -40,7 +40,7 @@ setInterval(function () {
   console.log()
   console.log(`-heartbeats[${name}] << ${show(o)}`)
   heartbeats.path(name).put(o)
-}, 3000)
+}, heartRate)
 
 const accum = {};
 heartbeats.map(function (o, name) {
