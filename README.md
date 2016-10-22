@@ -30,3 +30,8 @@ npm run build
 - [ng-nvd3](https://krispo.github.io/angular-nvd3/#/forceDirectedGraph)
 - [Angular 2 apps using Observable Data Services](http://blog.angular-university.io/how-to-build-angular2-apps-using-rxjs-observable-data-services-pitfalls-to-avoid/)
 - [WebSockets with Angular2 and RxJS](https://medium.com/@lwojciechowski/websockets-with-angular2-and-rxjs-8b6c5be02fac#.clhmgtnxd)
+
+### d3
+- [Modifying a Force Layout](https://bl.ocks.org/mbostock/1095795)
+- [Modal Logic Playground](http://rkirsling.github.io/modallogic/)
+- [Playground above uses Directed Graph Editor](https://bl.ocks.org/rkirsling/5001347)
