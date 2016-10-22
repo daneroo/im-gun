@@ -7,30 +7,29 @@ export class GunService {
 
   // private peers = ['8080']
   // private peers = ['8080', '8081', '8082']
-  private peers = ['8082','8081', '8080']
+  private peers = ['8082', '8081', '8080']
     .map(p => `http://localhost:${p}/gun`)
 
   private _heartbeatsSubject: Rx.BehaviorSubject<any>;
 
   constructor() {
-    console.log('imported Gun', Gun)
   }
 
   private heartbeats = {
-    "localhost:8080": {
-      tick: 35,
-      stamp: "2016-10-15T19:25:58.951Z",
-      lastSeen: "2016-10-15T19:25:58.951Z",
-      latencies: [26, 35],
-    },
-    "localhost:8081": {
-      tick: 29,
-      stamp: "2016-10-15T19:25:57.976Z"
-    },
-    "localhost:8082": {
-      tick: 95,
-      stamp: "2016-10-16T04:09:33.877Z"
-    }
+    // "localhost:8080": {
+    //   tick: 35,
+    //   stamp: "2016-10-15T19:25:58.951Z",
+    //   lastSeen: "2016-10-15T19:25:58.951Z",
+    //   latencies: [26, 35],
+    // },
+    // "localhost:8081": {
+    //   tick: 29,
+    //   stamp: "2016-10-15T19:25:57.976Z"
+    // },
+    // "localhost:8082": {
+    //   tick: 95,
+    //   stamp: "2016-10-16T04:09:33.877Z"
+    // }
   }
 
   getHeartbeats(): Rx.BehaviorSubject<any> {
@@ -51,11 +50,13 @@ export class GunService {
     heartbeatsGun.map(function (o, peer) {
       // console.log(`-heartbeats[${peer}] >> ${JSON.stringify(o)}`)
 
+      // create object if doesn't exist
+      self.heartbeats[peer] = self.heartbeats[peer] || {}
       const hb = self.heartbeats[peer]
       hb.tick = o.tick
       hb.stamp = o.stamp
       self.latency(hb)
-      console.log(`-heartbeats[${peer}] >> ${JSON.stringify(hb)}`)
+      // console.log(`-heartbeats[${peer}] << ${JSON.stringify(hb)}`)
 
       self._heartbeatsSubject.next(self.heartbeats)
 
